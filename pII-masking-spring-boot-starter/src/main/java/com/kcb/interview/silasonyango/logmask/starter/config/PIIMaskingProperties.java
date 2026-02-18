@@ -7,24 +7,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "pii.masking")
 public class PIIMaskingProperties {
 
-  /**
-   * Enable / disable masking entirely.
-   */
+
   private boolean enabled = true;
-
-  /**
-   * Field names to treat as sensitive (case-insensitive).
-   */
   private List<String> fields = new ArrayList<>();
-
-  /**
-   * Masking style: FULL, PARTIAL, LAST4.
-   */
   private MaskStyle maskStyle = MaskStyle.PARTIAL;
-
-  /**
-   * Character used when masking.
-   */
   private String maskCharacter = "*";
 
   public boolean isEnabled() {
