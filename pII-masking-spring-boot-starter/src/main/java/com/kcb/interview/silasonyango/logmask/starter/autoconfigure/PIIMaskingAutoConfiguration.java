@@ -1,6 +1,7 @@
 package com.kcb.interview.silasonyango.logmask.starter.autoconfigure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kcb.interview.silasonyango.logmask.starter.aop.JsonUtilMaskingAspect;
 import com.kcb.interview.silasonyango.logmask.starter.aop.LoggingMaskingAspect;
 import com.kcb.interview.silasonyango.logmask.starter.config.PIIMaskingProperties;
 import com.kcb.interview.silasonyango.logmask.starter.core.PIIMaskingService;
@@ -27,6 +28,12 @@ public class PIIMaskingAutoConfiguration {
     @ConditionalOnMissingBean
     public LoggingMaskingAspect loggingMaskingAspect(PIIMaskingService maskingService) {
         return new LoggingMaskingAspect(maskingService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public JsonUtilMaskingAspect jsonUtilMaskingAspect(PIIMaskingService maskingService) {
+        return new JsonUtilMaskingAspect(maskingService);
     }
 }
 
