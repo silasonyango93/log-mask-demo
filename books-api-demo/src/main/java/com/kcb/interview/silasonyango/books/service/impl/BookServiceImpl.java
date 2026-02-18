@@ -2,6 +2,7 @@ package com.kcb.interview.silasonyango.books.service.impl;
 
 import com.kcb.interview.silasonyango.books.dto.BookDto;
 import com.kcb.interview.silasonyango.books.entity.BookEntity;
+import com.kcb.interview.silasonyango.books.exception.ResourceNotFoundException;
 import com.kcb.interview.silasonyango.books.mapper.BookMapper;
 import com.kcb.interview.silasonyango.books.repository.BookRepository;
 import com.kcb.interview.silasonyango.books.service.BookService;
@@ -44,7 +45,10 @@ public class BookServiceImpl implements BookService {
 
   public BookDto findById(Long id) {
     log.info("Finding book by id: {}", id);
-    BookDto result = repository.findById(id).map(bookMapper::toDto).orElseThrow();
+
+    BookDto result = repository.findById(id).map(bookMapper::toDto)
+        .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
     log.info("Found book (masked): {}", jsonUtil.toJsonString(result));
     return result;
   }
@@ -66,6 +70,10 @@ public class BookServiceImpl implements BookService {
 
   public void delete(Long id) {
     log.info("Deleting book with id: {}", id);
+
+    repository.findById(id).map(bookMapper::toDto)
+        .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+
     repository.deleteById(id);
   }
 }
