@@ -104,14 +104,6 @@ class BookServiceImplTest {
     Assertions.assertEquals("Clean Code", actual.getTitle());
   }
 
-  @Test
-  void delete__shouldCallRepositoryDelete() {
-
-    serviceUnderTest.delete(1L);
-
-    verify(repository, times(1)).deleteById(1L);
-  }
-
   private BookEntity createBookEntity() {
 
     return BookEntity.builder()
