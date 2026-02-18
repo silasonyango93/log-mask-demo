@@ -12,11 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Masks configured sensitive fields in arbitrary objects by converting them to a JSON tree, walking
- * it and masking values for matching field names. The original object instance is never mutated –
- * only the JSON representation used for logging is affected.
- */
 public class PIIMaskingService {
 
   private final ObjectMapper objectMapper;
@@ -54,13 +49,16 @@ public class PIIMaskingService {
     if (node == null || node.isNull()) {
       return node;
     }
+
     if (node.isObject()) {
       ObjectNode obj = (ObjectNode) node;
       Iterator<Map.Entry<String, JsonNode>> fields = obj.fields();
+
       while (fields.hasNext()) {
         Map.Entry<String, JsonNode> entry = fields.next();
         String fieldName = entry.getKey();
         JsonNode child = entry.getValue();
+
         if (fieldNamesLowerCase.contains(fieldName.toLowerCase(Locale.ROOT))
             && child.isValueNode()) {
           String masked = applyMask(child.asText());
@@ -71,12 +69,15 @@ public class PIIMaskingService {
       }
       return obj;
     }
+
     if (node.isArray()) {
       ArrayNode arrayNode = (ArrayNode) node;
+
       for (int i = 0; i < arrayNode.size(); i++) {
         JsonNode child = arrayNode.get(i);
         arrayNode.set(i, maskNode(child));
       }
+
       return arrayNode;
     }
     return node;
