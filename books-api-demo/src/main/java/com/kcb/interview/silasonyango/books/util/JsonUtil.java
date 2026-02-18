@@ -2,7 +2,6 @@ package com.kcb.interview.silasonyango.books.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kcb.interview.silasonyango.logmask.starter.core.PIIMaskingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

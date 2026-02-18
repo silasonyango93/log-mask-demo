@@ -18,22 +18,23 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnProperty(prefix = "pii.masking", name = "enabled", havingValue = "true", matchIfMissing = true)
 public class PIIMaskingAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PIIMaskingService piiMaskingService(ObjectMapper objectMapper, PIIMaskingProperties properties) {
-        return new PIIMaskingService(objectMapper, properties);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public PIIMaskingService piiMaskingService(ObjectMapper objectMapper,
+      PIIMaskingProperties properties) {
+    return new PIIMaskingService(objectMapper, properties);
+  }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public LoggingMaskingAspect loggingMaskingAspect(PIIMaskingService maskingService) {
-        return new LoggingMaskingAspect(maskingService);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public LoggingMaskingAspect loggingMaskingAspect(PIIMaskingService maskingService) {
+    return new LoggingMaskingAspect(maskingService);
+  }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public JsonUtilMaskingAspect jsonUtilMaskingAspect(PIIMaskingService maskingService) {
-        return new JsonUtilMaskingAspect(maskingService);
-    }
+  @Bean
+  @ConditionalOnMissingBean
+  public JsonUtilMaskingAspect jsonUtilMaskingAspect(PIIMaskingService maskingService) {
+    return new JsonUtilMaskingAspect(maskingService);
+  }
 }
 

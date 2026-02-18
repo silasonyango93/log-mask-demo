@@ -20,13 +20,13 @@ import lombok.Setter;
 @Table(name = "books")
 public class BookEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String title;
-    private String author;
-    private String email;
-    private String phoneNumber;
+  private String title;
+  private String author;
+  private String email;
+  private String phoneNumber;
 }
 

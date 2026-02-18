@@ -13,10 +13,10 @@ import lombok.Setter;
 @Builder
 public class BookDto {
 
-    private Long id;
-    private String title;
-    private String author;
-    private String email;
-    private String phoneNumber;
+  private Long id;
+  private String title;
+  private String author;
+  private String email;
+  private String phoneNumber;
 }
 

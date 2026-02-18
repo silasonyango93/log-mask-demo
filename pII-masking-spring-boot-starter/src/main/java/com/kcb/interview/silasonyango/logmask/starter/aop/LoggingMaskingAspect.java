@@ -13,37 +13,37 @@ import org.springframework.util.ObjectUtils;
 @Aspect
 public class LoggingMaskingAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(LoggingMaskingAspect.class);
+  private static final Logger log = LoggerFactory.getLogger(LoggingMaskingAspect.class);
 
-    private final PIIMaskingService maskingService;
+  private final PIIMaskingService maskingService;
 
-    public LoggingMaskingAspect(PIIMaskingService maskingService) {
-        this.maskingService = maskingService;
+  public LoggingMaskingAspect(PIIMaskingService maskingService) {
+    this.maskingService = maskingService;
+  }
+
+  @Before("within(@org.springframework.stereotype.Service *)")
+  public void logRequest(JoinPoint joinPoint) {
+    Object[] args = joinPoint.getArgs();
+
+    if (ObjectUtils.isEmpty(args)) {
+      return;
     }
 
-    @Before("within(@org.springframework.stereotype.Service *)")
-    public void logRequest(JoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
+    for (Object arg : args) {
+      String masked = maskingService.maskForLogging(arg);
+      log.info("Service call {} arg (masked): {}", joinPoint.getSignature(), masked);
+    }
+  }
 
-        if (ObjectUtils.isEmpty(args)) {
-            return;
-        }
+  @AfterReturning(pointcut = "within(@org.springframework.stereotype.Service *)", returning = "result")
+  public void logResponse(JoinPoint joinPoint, Object result) {
 
-        for (Object arg : args) {
-            String masked = maskingService.maskForLogging(arg);
-            log.info("Service call {} arg (masked): {}", joinPoint.getSignature(), masked);
-        }
+    if (result == null) {
+      return;
     }
 
-    @AfterReturning(pointcut = "within(@org.springframework.stereotype.Service *)", returning = "result")
-    public void logResponse(JoinPoint joinPoint, Object result) {
-
-        if (result == null) {
-            return;
-        }
-
-        String masked = maskingService.maskForLogging(result);
-        log.info("Service call {} result (masked): {}", joinPoint.getSignature(), masked);
-    }
+    String masked = maskingService.maskForLogging(result);
+    log.info("Service call {} result (masked): {}", joinPoint.getSignature(), masked);
+  }
 }
 
