@@ -1,9 +1,10 @@
 package com.kcb.interview.silasonyango.books.service;
 
-import com.kcb.interview.silasonyango.books.domain.Book;
+import com.kcb.interview.silasonyango.books.entity.BookEntity;
 import com.kcb.interview.silasonyango.books.dto.BookDto;
 import com.kcb.interview.silasonyango.books.repository.BookRepository;
 import com.kcb.interview.silasonyango.logmask.starter.core.PIIMaskingService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
     private static final Logger log = LoggerFactory.getLogger(BookService.class);
@@ -18,16 +20,15 @@ public class BookService {
     private final BookRepository repository;
     private final PIIMaskingService maskingService;
 
-    public BookService(BookRepository repository, PIIMaskingService maskingService) {
-        this.repository = repository;
-        this.maskingService = maskingService;
-    }
-
     public BookDto create(BookDto dto) {
         log.info("Creating book (masked): {}", maskingService.maskForLogging(dto));
-        Book saved = repository.save(toEntity(dto));
+
+        //Save created book to database
+        BookEntity saved = repository.save(toEntity(dto));
+
         BookDto result = toDto(saved);
         log.info("Created book (masked): {}", maskingService.maskForLogging(result));
+
         return result;
     }
 
@@ -46,12 +47,12 @@ public class BookService {
 
     public BookDto update(Long id, BookDto dto) {
         log.info("Updating book {} with data (masked): {}", id, maskingService.maskForLogging(dto));
-        Book book = repository.findById(id).orElseThrow();
-        book.setTitle(dto.getTitle());
-        book.setAuthor(dto.getAuthor());
-        book.setEmail(dto.getEmail());
-        book.setPhoneNumber(dto.getPhoneNumber());
-        BookDto result = toDto(repository.save(book));
+        BookEntity bookEntity = repository.findById(id).orElseThrow();
+        bookEntity.setTitle(dto.getTitle());
+        bookEntity.setAuthor(dto.getAuthor());
+        bookEntity.setEmail(dto.getEmail());
+        bookEntity.setPhoneNumber(dto.getPhoneNumber());
+        BookDto result = toDto(repository.save(bookEntity));
         log.info("Updated book (masked): {}", maskingService.maskForLogging(result));
         return result;
     }
@@ -61,23 +62,23 @@ public class BookService {
         repository.deleteById(id);
     }
 
-    private Book toEntity(BookDto dto) {
-        Book book = new Book();
-        book.setId(dto.getId());
-        book.setTitle(dto.getTitle());
-        book.setAuthor(dto.getAuthor());
-        book.setEmail(dto.getEmail());
-        book.setPhoneNumber(dto.getPhoneNumber());
-        return book;
+    private BookEntity toEntity(BookDto dto) {
+        BookEntity bookEntity = new BookEntity();
+        bookEntity.setId(dto.getId());
+        bookEntity.setTitle(dto.getTitle());
+        bookEntity.setAuthor(dto.getAuthor());
+        bookEntity.setEmail(dto.getEmail());
+        bookEntity.setPhoneNumber(dto.getPhoneNumber());
+        return bookEntity;
     }
 
-    private BookDto toDto(Book book) {
+    private BookDto toDto(BookEntity bookEntity) {
         BookDto dto = new BookDto();
-        dto.setId(book.getId());
-        dto.setTitle(book.getTitle());
-        dto.setAuthor(book.getAuthor());
-        dto.setEmail(book.getEmail());
-        dto.setPhoneNumber(book.getPhoneNumber());
+        dto.setId(bookEntity.getId());
+        dto.setTitle(bookEntity.getTitle());
+        dto.setAuthor(bookEntity.getAuthor());
+        dto.setEmail(bookEntity.getEmail());
+        dto.setPhoneNumber(bookEntity.getPhoneNumber());
         return dto;
     }
 }
