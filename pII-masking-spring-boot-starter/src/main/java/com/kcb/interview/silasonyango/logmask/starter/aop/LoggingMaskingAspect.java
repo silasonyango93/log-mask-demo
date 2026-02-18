@@ -7,12 +7,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 
-/**
- * Simple AOP aspect that logs method arguments and return values using {@link PIIMaskingService}.
- * It does not change the actual objects or the real logging configuration, but demonstrates
- * how an application can get masked values in logs.
- */
+
 @Aspect
 public class LoggingMaskingAspect {
 
@@ -24,25 +21,29 @@ public class LoggingMaskingAspect {
         this.maskingService = maskingService;
     }
 
-    @Before("within(@org.springframework.web.bind.annotation.RestController *)")
+    @Before("within(@org.springframework.stereotype.Service *)")
     public void logRequest(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        if (args == null || args.length == 0) {
+
+        if (ObjectUtils.isEmpty(args)) {
             return;
         }
+
         for (Object arg : args) {
             String masked = maskingService.maskForLogging(arg);
-            log.info("Request arg (masked): {}", masked);
+            log.info("Service call {} arg (masked): {}", joinPoint.getSignature(), masked);
         }
     }
 
-    @AfterReturning(pointcut = "within(@org.springframework.web.bind.annotation.RestController *)", returning = "result")
-    public void logResponse(Object result) {
+    @AfterReturning(pointcut = "within(@org.springframework.stereotype.Service *)", returning = "result")
+    public void logResponse(JoinPoint joinPoint, Object result) {
+
         if (result == null) {
             return;
         }
+
         String masked = maskingService.maskForLogging(result);
-        log.info("Response (masked): {}", masked);
+        log.info("Service call {} result (masked): {}", joinPoint.getSignature(), masked);
     }
 }
 
