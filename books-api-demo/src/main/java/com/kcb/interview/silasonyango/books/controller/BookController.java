@@ -1,7 +1,7 @@
 package com.kcb.interview.silasonyango.books.controller;
 
 import com.kcb.interview.silasonyango.books.dto.BookDto;
-import com.kcb.interview.silasonyango.books.service.BookService;
+import com.kcb.interview.silasonyango.books.service.impl.BookServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
 
-  private final BookService service;
+  private final BookServiceImpl service;
 
   @PostMapping
   public ResponseEntity<BookDto> create(@RequestBody BookDto dto) {
